@@ -1,5 +1,5 @@
 const generate = require("nanoid/generate");
-const FAQ = require("./faqs.model");
+const FAQ = require("./posts.model");
 const IRIS = require("../../config/iris");
 
 exports.getFAQs = (req, res) => {

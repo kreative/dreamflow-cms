@@ -6,15 +6,15 @@ const FAQ = DB.define('faq', {
         type: Sequelize.TEXT,
         primaryKey: true
     },
-    question: {
+    title: {
         type: Sequelize.TEXT,
         allowNull: false,
     },
-    answer: {
+    content: {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    product: {
+    cover_image: {
         type: Sequelize.TEXT,
         allowNull: false,
     },
