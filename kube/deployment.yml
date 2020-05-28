@@ -25,7 +25,7 @@ spec:
         name: dreamflow-cms
     spec:
       containers:
-      - name: application
+      - name: dreamflow-cms-app
         image: kaynet/dreamflow-cms
         imagePullPolicy: Always
         ports:
