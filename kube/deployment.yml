@@ -31,4 +31,4 @@ spec:
         ports:
           - containerPort: 8080
       imagePullSecrets:
-        - name: myregistrysecret
+        - name: myregsecret

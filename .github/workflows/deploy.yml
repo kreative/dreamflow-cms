@@ -55,8 +55,11 @@ jobs:
     - name: Save DigitalOcean kubeconfig
       run: doctl kubernetes cluster kubeconfig save kaynet-cluster-1
 
+    - name: Remove Existing Secret
+      run: kubectl delete secret/myreqsecret
+
     - name: Create Secret for Docker Hub
-      run: kubectl create secret docker-registry myregistrysecret --docker-server=hub.docker.com --docker-username=${{ secrets.DOCKER_USERNAME}} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL }}
+      run: kubectl create secret docker-registry myregsecret --docker-server=hub.docker.com --docker-username=${{ secrets.DOCKER_USERNAME}} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL }}
 
     - name: Deploy to Managed Kubernetes
       run: kubectl apply -f kube/deployment.yml
