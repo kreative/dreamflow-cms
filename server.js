@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 const Sentry = require('@sentry/node');
 const bodyParser = require('body-parser');
 const helmet = require("helmet");
+const exphbs = require('express-handlebars');
 
 dotenv.config();
 Sentry.init({dsn:process.env.SENTRY_DSN});
@@ -19,6 +20,11 @@ const posts = require("./components/posts/routes");
 server.use(helmet());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
+server.use(express.static(path.join(__dirname, '/public')));
+
+server.engine('handlebars', exphbs({defaultLayout: 'main'}));
+server.set('view engine', 'handlebars');
+
 
 server.get("/", (req, res) => {
   res.send(`
