@@ -1,9 +1,9 @@
 const router = require("express").Router();
-const FAQController = require("./faqs.controller");
+const postController = require("./posts.controller");
 
-router.get("/faqs", FAQController.getFAQs);
-router.post("/faqs", FAQController.createFAQ);
-router.put("/faqs", FAQController.editFAQ);
-router.delete("/faqs", FAQController.deleteFAQ);
+router.get("/posts", postController.getPosts);
+router.post("/posts", postController.createPost);
+router.put("/posts", postController.editPost);
+router.delete("/posts", postController.deletePost);
 
 module.exports = router;
