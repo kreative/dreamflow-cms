@@ -18,7 +18,7 @@ server.use(helmet());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 
-server.get("/", (req, res) => res.send("dreamflow cms online"));
+server.get("/", (req, res) => res.send("dreamflow cms online mate"));
 server.use(faqs);
 
 DB.authenticate().catch((err) => console.log("Error: " + err))
