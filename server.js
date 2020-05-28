@@ -18,7 +18,13 @@ server.use(helmet());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 
-server.get("/", (req, res) => res.send("Dreamflow CMS is online, Dreamer!"));
+server.get("/", (req, res) => {
+  res.send(`
+    Dreamflow CMS is online, Dreamer!
+    DBHOST: ${process.env.PGHOST}
+  `);
+});
+
 server.use(faqs);
 
 DB.authenticate().catch((err) => console.log("Error: " + err))
