@@ -56,7 +56,8 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save kaynet-cluster-1
 
     - name: Remove Existing Secret
-      run: kubectl delete secret/myreqsecret
+      run: kubectl delete secret/myregsecret
+      continue-on-error: true
 
     - name: Create Secret for Docker Hub
       run: kubectl create secret docker-registry myregsecret --docker-server=hub.docker.com --docker-username=${{ secrets.DOCKER_USERNAME}} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL }}
