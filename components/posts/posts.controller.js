@@ -1,67 +1,75 @@
 const generate = require("nanoid/generate");
-const FAQ = require("./posts.model");
+const Post = require("./posts.model");
 const IRIS = require("../../config/iris");
 
-exports.getFAQs = (req, res) => {
-    FAQ.findAll()
+exports.getPosts = (req, res) => {
+    Post.findAll()
     .catch(err => {
-        IRIS.critical("get faqs failed", {req, err}, ["ise","api"]);
+        IRIS.critical("get posts failed", {req, err}, ["ise","api"]);
         res.json({status:500, data:{errorCode:"internal_server_error"}});
     })
-    .then(faqs => {
-        IRIS.info("get faqs passed", {}, ["success"]);
-        res.json({status:200, data:{faqs}});
+    .then(posts => {
+        IRIS.info("get posts passed", {}, ["success"]);
+        res.json({status:200, data:{posts}});
     });
 };
 
 
-exports.createFAQ = (req, res) => {
+exports.createPost = (req, res) => {
     const id = generate("1234567890abcdefgjklimnopqrstuvwxyz", 36);
-    const product = req.body.product;
-    const question = req.body.question;
-    const answer = req.body.answer;
+    const title = req.body.title;
+    const subtitle = req.body.subtitle;
+    const cover_image = req.body.cover_image;
+    const content = req.body.content;
+    const publishing_date = req.body.publishing_date;
+    const tags = req.body.tags;
+    const author = req.body.author_ksn;
     const createdat = Date.now();
 
-    FAQ.create({
+    Post.create({
         id,
-        question,
-        answer,
-        product,
+        title,
+        subtitle,
+        cover_image,
+        content,
+        publishing_date,
+        tags,
+        author,
         createdat
     })
     .catch(err => {
         console.log(err);
-        IRIS.critical("create faq failed", {req, err}, ["ise","api"]);
+        IRIS.critical("create post failed", {req, err}, ["ise","api"]);
         res.json({status:500, data:{errorCode:"internal_server_error"}})
     })
-    .then(faq => {
-        IRIS.info("new faq created", {faq}, ["success"]);
-        res.json({status:202, data:{faq}});
+    .then(post => {
+        IRIS.info("new post created", {post}, ["success"]);
+        res.json({status:202, data:{post}});
     });
 };
 
 
-exports.editFAQ = (req, res) => {
-    FAQ.update(req.body.newFAQ, {where:{id:req.body.id}})
+exports.editPost = (req, res) => {
+    Post.update(req.body.newPost, {where:{id:req.body.id}})
     .catch(err => {
         console.log(err);
-        IRIS.critical("update faq failed", {req, err}, ["ise","api"]);
+        IRIS.critical("update post failed", {req, err}, ["ise","api"]);
         res.json({status:500, data:{errorCode:"internal_server_error"}})
     })
     .then(update => {
-        IRIS.info("update faq passed", {update}, ["success"]);
+        IRIS.info("update post passed", {update}, ["success"]);
         res.json({status:202, data:{update}});
     });
 };
 
-exports.deleteFAQ = (req, res) => {
-    FAQ.destroy({where:{id:req.body.id}})
+exports.deletePost = (req, res) => {
+    Post.destroy({where:{id:req.body.id}})
     .catch(err => {
-        IRIS.critical("delete faq failed", {err, req}, ["ise","api"]);
+        IRIS.critical("delete post failed", {err, req}, ["ise","api"]);
         res.json({status:500, data:{errorCode:"internal_server_error"}});
     })
     .then(() => {
-        IRIS.info("faq deleted", {id:req.body.id}, ["success"]);
+        IRIS.info("post deleted", {id:req.body.id}, ["success"]);
         res.json({status:202});
     })
 };

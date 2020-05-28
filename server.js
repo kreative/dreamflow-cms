@@ -13,6 +13,8 @@ const server = express();
 const DB = require("./config/db");
 
 const faqs = require("./components/faqs/routes");
+const authors = require("./components/authors/routes");
+const posts = require("./components/posts/routes");
 
 server.use(helmet());
 server.use(bodyParser.json());
@@ -27,6 +29,8 @@ server.get("/", (req, res) => {
 });
 
 server.use(faqs);
+server.use(authors);
+server.use(posts);
 
 DB.authenticate().catch((err) => console.log("Error: " + err))
 .then(() => server.listen(PORT, HOST, console.log(`Server started on ${HOST}:${PORT}`)));
