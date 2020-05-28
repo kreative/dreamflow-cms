@@ -20,8 +20,9 @@ server.use(bodyParser.urlencoded({extended: true}));
 
 server.get("/", (req, res) => {
   res.send(`
-    Dreamflow CMS is online, Dreamer!
-    DBHOST: ${process.env.PGHOST}
+    Dreamflow CMS is online, Dreamer! <br>
+    DBHOST: ${process.env.PGHOST} <br>
+    DBDATABASE: ${process.env.PGDATABASE}
   `);
 });
 
