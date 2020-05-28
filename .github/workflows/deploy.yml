@@ -55,12 +55,15 @@ jobs:
     - name: Save DigitalOcean kubeconfig
       run: doctl kubernetes cluster kubeconfig save kaynet-cluster-1
 
-    - name: Remove Existing Secret
-      run: kubectl delete secret/myregsecret
-      continue-on-error: true
+    - name: Set image to Latest
+      run: kubectl set image deployments/dreamflow-cms dreamflow-cms-app=kaynet/dreamflow-cms:latest
 
-    - name: Create Secret for Docker Hub
-      run: kubectl create secret docker-registry myregsecret --docker-server=docker.io --docker-username=${{ secrets.DOCKER_USERNAME}} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL }}
+    # - name: Remove Existing Secret
+    #   run: kubectl delete secret/myregsecret
+    #   continue-on-error: true
 
-    - name: Deploy to Managed Kubernetes
-      run: kubectl apply -f kube/deployment.yml
+    # - name: Create Secret for Docker Hub
+    #   run: kubectl create secret docker-registry myregsecret --docker-server=docker.io --docker-username=${{ secrets.DOCKER_USERNAME}} --docker-password=${{ secrets.DOCKER_PASSWORD }} --docker-email=${{ secrets.DOCKER_EMAIL }}
+
+    # - name: Deploy to Managed Kubernetes
+    #   run: kubectl apply -f kube/deployment.yml
