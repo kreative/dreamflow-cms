@@ -42,7 +42,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: kaynet/dreamflow-cms
-        tags: ${{ GIT_SHA }}
+        tags: ${{ env.GIT_SHA }}
   kubernetes_deploy:
     
     runs-on: ubuntu-latest
@@ -59,4 +59,4 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save kaynet-cluster-1
 
     - name: Set image to Latest
-      run: kubectl set image deployments/dreamflow-cms dreamflow-cms-app=kaynet/dreamflow-cms:${{ GIT_SHA }}
+      run: kubectl set image deployments/dreamflow-cms dreamflow-cms-app=kaynet/dreamflow-cms:${{ env.GIT_SHA }}
