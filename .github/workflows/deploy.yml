@@ -64,9 +64,3 @@ jobs:
 
     - name: Deploy to Managed Kubernetes
       run: kubectl apply -f kube/deployment.yml
-
-    - name: Verify deployment
-      run: kubectl rollout status deployment/dreamflow-cms
-      
-
-
