@@ -1,0 +1,12 @@
+<script src="//cdn.jsdelivr.net/npm/medium-editor@5.23.2/dist/js/medium-editor.min.js"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/medium-editor@5.23.2/dist/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
+<div class="container">
+  <h1 class="editable">Create New Post</h1>
+  <h2 class="editable">Everything is editable, get started.</h2>
+  <button type="submit" class="btn btn-primary" id="save-btn" disabled>Publish post</button>
+  <button type="submit" class="btn btn-primary" id="save-btn" disabled>Save as draft</button>
+</div>
+<script>
+  var elements = document.querySelectorAll('.editable');
+  var editor = new MediumEditor(elements);
+</script>

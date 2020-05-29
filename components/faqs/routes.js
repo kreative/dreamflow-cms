@@ -1,9 +1,12 @@
 const router = require("express").Router();
 const FAQController = require("./faqs.controller");
 
-router.get("/faqs", FAQController.getFAQs);
-router.post("/faqs", FAQController.createFAQ);
-router.put("/faqs", FAQController.editFAQ);
-router.delete("/faqs", FAQController.deleteFAQ);
+router.get("/api/faqs", FAQController.getFAQs);
+router.post("/api/faqs", FAQController.createFAQ);
+router.post("/api/faqs/:id", FAQController.editFAQ);
+router.delete("/api/faqs/:id", FAQController.deleteFAQ);
+
+router.get("/admin/content-type/faq", FAQController.getFAQContentTypePage);
+router.get("/admin/content-type/faq/:id", FAQController.getFAQSinglePage);
 
 module.exports = router;

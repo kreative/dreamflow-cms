@@ -1,0 +1,99 @@
+<div class="container">
+  {{#if updateSuccess}}
+  <div class="alert alert-success" role="alert">
+    FAQ updated successfully. Whooh!
+  </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Manage FAQ</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button id="delete-btn" type="button" class="btn btn-danger btn-md">
+        <i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Delete FAQ
+      </button>
+    </div>
+  </div>
+  <div>
+    <span class="badge badge-secondary">{{id}}</span>
+    <span class="badge badge-secondary">{{createdat}}</span>
+  </div>
+  <div style="margin-top: 25px;">
+    <form>
+      <div class="form-group">
+        <label for="question-field">Question</label>
+        <input type="text" class="form-control" id="question-field">
+      </div>
+      <div class="form-group">
+        <label for="answer-field">Answer</label>
+        <textarea class="form-control" id="answer-field" rows="3"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="product-field">Product</label>
+        <input type="text" class="form-control" id="product-field">
+      </div>
+      <button type="submit" class="btn btn-primary" id="save-btn" disabled>Save FAQ</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  var saveBtn = document.getElementById("save-btn");
+  var deleteBtn = document.getElementById("delete-btn");
+  var questionField = document.getElementById("question-field");
+  var answerField = document.getElementById("answer-field");
+  var productField = document.getElementById("product-field");
+
+  function handleKeyup() {
+    var question = questionField.value;
+    var product = productField.value;
+    var answer = answerField.value;
+
+    if (question != "{{question}}" || product != "{{product}}" || answer != "{{answer}}") {
+      saveBtn.disabled = false;
+    }
+    else {
+      saveBtn.disabled = true;
+    }
+  }
+
+  window.onload = function () {
+    questionField.value = "{{question}}";
+    answerField.value = "{{answer}}";
+    productField.value = "{{product}}";
+  }
+
+  questionField.addEventListener('keyup', handleKeyup);
+  answerField.addEventListener('keyup', handleKeyup);
+  productField.addEventListener('keyup', handleKeyup);
+
+  deleteBtn.addEventListener('click', async function () {
+    try {
+      var res = await axios.delete('/api/faqs/{{id}}');
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = '/admin/content-type/faq?deleted=true';
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    try {
+      var res = await axios.post('/api/faqs/{{id}}', {
+        product: productField.value,
+        question: questionField.value,
+        answer: answerField.value
+      });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else location.replace('/admin/content-type/faq/{{id}}?updated=true');
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+</script>
