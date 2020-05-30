@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const Sentry = require('@sentry/node');
 const bodyParser = require('body-parser');
 const helmet = require("helmet");
+const exphbs = require('express-handlebars');
+const path = require("path");
 
 dotenv.config();
 Sentry.init({dsn:process.env.SENTRY_DSN});
@@ -13,10 +15,18 @@ const server = express();
 const DB = require("./config/db");
 
 const faqs = require("./components/faqs/routes");
+const authors = require("./components/authors/routes");
+const posts = require("./components/posts/routes");
+const admin = require("./components/admin/routes");
 
 server.use(helmet());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
+server.use(express.static(path.join(__dirname, '/public')));
+
+server.engine('handlebars', exphbs({defaultLayout: 'main'}));
+server.set('view engine', 'handlebars');
+
 
 server.get("/", (req, res) => {
   res.send(`
@@ -27,6 +37,9 @@ server.get("/", (req, res) => {
 });
 
 server.use(faqs);
+server.use(authors);
+server.use(posts);
+server.use(admin);
 
 DB.authenticate().catch((err) => console.log("Error: " + err))
 .then(() => server.listen(PORT, HOST, console.log(`Server started on ${HOST}:${PORT}`)));

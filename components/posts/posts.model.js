@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const DB = require("../../config/db");
 
-const FAQ = DB.define('faq', {
+const Post = DB.define('post', {
     id: {
         type: Sequelize.TEXT,
         primaryKey: true
@@ -10,11 +10,31 @@ const FAQ = DB.define('faq', {
         type: Sequelize.TEXT,
         allowNull: false,
     },
+    subtitle: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
+    draft: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
+    cover_image: {
+        type: Sequelize.TEXT,
+        allowNull: true
+    },
     content: {
         type: Sequelize.TEXT,
         allowNull: false
     },
-    cover_image: {
+    publishing_date: {
+        type: Sequelize.BIGINT,
+        allowNull: false
+    },
+    tags: {
+        type: Sequelize.ARRAY(Sequelize.TEXT),
+        allowNull: true
+    },
+    author: {
         type: Sequelize.TEXT,
         allowNull: false,
     },
@@ -23,4 +43,4 @@ const FAQ = DB.define('faq', {
     timestamps: false
 });
 
-module.exports = FAQ;
+module.exports = Post;

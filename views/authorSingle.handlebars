@@ -1,0 +1,93 @@
+<div class="container">
+  {{#if updateSuccess}}
+  <div class="alert alert-success" role="alert">
+    Author updated successfully. Whooh!
+  </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Manage Author</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button id="delete-btn" type="button" class="btn btn-danger btn-md">
+        <i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Remove Author
+      </button>
+      <button style="margin-left: 10px;" id="goback-btn" type="button" class="btn btn-secondary btn-md" onclick="window.location='/admin/content-type/author'">
+        <i class="fas fa-hand-point-left" style="margin-right: 5px;"></i> Go Back
+      </button>
+    </div>
+  </div>
+  <div>
+    <span class="badge badge-primary">{{id}}</span>
+    <span class="badge badge-secondary">{{createdat}}</span>
+  </div>
+  <div style="margin-top: 25px;">
+    <form>
+      <div class="form-group">
+        <label for="ksn-field">KSN</label>
+        <input type="text" class="form-control" id="ksn-field">
+      </div>
+      <div class="form-group">
+        <label for="bio-field">Biography</label>
+        <textarea class="form-control" id="bio-field" rows="3"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" id="save-btn" disabled>Update Author</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  var saveBtn = document.getElementById("save-btn");
+  var deleteBtn = document.getElementById("delete-btn");
+  var ksnField = document.getElementById("ksn-field");
+  var bioField = document.getElementById("bio-field");
+
+  function handleKeyup() {
+    var ksn = ksnField.value;
+    var bio = bioField.value;
+
+    if (ksn != "{{ksn}}" || bio != "{{bio}}") {
+      saveBtn.disabled = false;
+    }
+    else {
+      saveBtn.disabled = true;
+    }
+  }
+
+  window.onload = function () {
+    ksnField.value = "{{ksn}}";
+    bioField.value = "{{bio}}";
+  }
+
+  ksnField.addEventListener('keyup', handleKeyup);
+  bioField.addEventListener('keyup', handleKeyup);
+
+  deleteBtn.addEventListener('click', async function () {
+    try {
+      var res = await axios.delete('/api/authors/{{id}}');
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = '/admin/content-type/author?deleted=true';
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+
+  saveBtn.addEventListener('click', async function () {
+    try {
+      var res = await axios.post('/api/authors/{{id}}', {
+        ksn: ksnField.value,
+        bio: bioField.value,
+      });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else location.replace('/admin/content-type/author/{{id}}?updated=true');
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+</script>

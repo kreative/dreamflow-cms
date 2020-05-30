@@ -1,0 +1,168 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+
+<div class="container">
+  {{#if updateSuccess}}
+  <div class="alert alert-success" role="alert">
+    Post updated successfully. Whooh!
+  </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Manage Post</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button id="delete-btn" type="button" class="btn btn-danger btn-md">
+        <i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Delete Post
+      </button>
+      <button style="margin-left: 10px;" id="goback-btn" type="button" class="btn btn-secondary btn-md" onclick="window.location='/admin/content-type/post'">
+        <i class="fas fa-hand-point-left" style="margin-right: 5px;"></i> Go Back
+      </button>
+    </div>
+  </div>
+  <div>
+    <span class="badge badge-primary">{{id}}</span>
+    <span class="badge badge-info" id="draft-badge">{{draft}}</span>
+    <span class="badge badge-secondary">{{createdat}}</span>
+  </div>
+  <form>
+    <div class="form-group">
+      <label for="title-field">Title</label>
+      <input type="text" class="form-control" id="title-field" required>
+    </div>
+    <div class="form-group">
+      <label for="subtitle-field">Subtitle</label>
+      <input type="text" class="form-control" id="subtitle-field" required>
+    </div>
+    <div class="row">
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="coverimage-field">Cover Image</label>
+          <input type="text" class="form-control" id="coverimage-field" required>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="publishingdate-field">Publishing Date</label>
+          <input type="text" class="form-control" id="publishingdate-field" required>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="author-field">Author</label>
+          <input type="text" class="form-control" id="author-field" required>
+        </div>
+      </div>
+    </div>
+
+    <textarea id="markdown-editor"></textarea>
+
+    <button type="submit" class="btn btn-primary" id="publish-btn" disabled>Publish post</button>
+    <button type="submit" class="btn btn-secondary" id="draft-btn" disabled>Save as draft</button>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<script>
+
+  var title = document.getElementById("title-field");
+  var subtitle = document.getElementById("subtitle-field");
+  var coverImage = document.getElementById("coverimage-field");
+  var publishingDate = document.getElementById("publishingdate-field");
+  var author = document.getElementById("author-field");
+  var publishBtn = document.getElementById("publish-btn");
+  var draftBtn = document.getElementById("draft-btn");
+  var deleteBtn = document.getElementById("delete-btn");
+  var markdownEditor = document.getElementById("markdown-editor");
+  var draftBadge = document.getElementById("draft-badge");
+
+  var content = new SimpleMDE({
+    element: markdownEditor
+  });
+
+  function handleKeyup() {
+    var newTitle = title.value;
+    var newSubtitle = subtitle.value;
+    var newCoverImage = coverImage.value;
+    var newPublishingDate = publishingDate.value;
+    var newAuthor = author.value;
+    var newContent = content.value();
+
+    if (newTitle != "{{title}}" ||
+        newSubtitle != "{{subtitle}}" ||
+        newCoverImage != "{{cover_image}}" ||
+        newPublishingDate != "{{publishing_date}}" ||
+        newAuthor != "{{author}}" ||
+        newContent != "{{content}}"
+    ) {
+      publishBtn.disabled = false;
+      draftBtn.disabled = false;
+    }
+    else {
+      publishBtn.disabled = true;
+      draftBtn.disabled = true;
+    }
+  }
+
+  async function handleSave(isDraft) {
+    var markdown = content.value();
+
+    try {
+      var res = await axios.post("/api/posts/{{id}}", {
+        title: title.value,
+        subtitle: subtitle.value,
+        cover_image: coverImage.value,
+        publishing_date: publishingDate.value,
+        author: author.value,
+        content: markdown,
+        draft: isDraft
+      });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else location.replace('/admin/content-type/post/{{id}}?updated=true');
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error occured.");
+    }
+  }
+
+  window.onload = function() {
+    title.value = "{{title}}";
+    subtitle.value = "{{subtitle}}";
+    coverImage.value = "{{cover_image}}";
+    publishingDate.value = "{{publishing_date}}";
+    author.value = "{{author}}";
+    draftBadge.textContent = "draft="+"{{draft}}";
+    content.value("{{content}}");
+  };
+
+  title.addEventListener('keyup', handleKeyup);
+  subtitle.addEventListener('keyup', handleKeyup);
+  coverImage.addEventListener('keyup', handleKeyup);
+  publishingDate.addEventListener('keyup', handleKeyup);
+  author.addEventListener('keyup', handleKeyup);
+  markdownEditor.addEventListener('keyup', handleKeyup);
+
+  publishBtn.addEventListener('click', async function() {
+    handleSave(false);
+  });
+
+  draftBtn.addEventListener('click', async function() {
+    handleSave(true);
+  });
+
+  deleteBtn.addEventListener('click', async function() {
+    try {
+      var res = await axios.delete("/api/posts/{{id}}");
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = '/admin/content-type/post?deleted=true';
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error occured");
+    }
+  });
+
+</script>
