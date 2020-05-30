@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dreamflow-cms
+  name: dreamflow-cms-lb
+  namespace: dreamflow
 spec:
   selector:
-    name: dreamflow-cms
+    name: dreamflow-cms-lb
   ports:
     - port: 80
       targetPort: 8080
@@ -14,8 +15,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dreamflow-cms
+  namespace: dreamflow
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       name: dreamflow-cms

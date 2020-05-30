@@ -66,4 +66,4 @@ jobs:
       run: doctl kubernetes cluster kubeconfig save kaynet-cluster-1
 
     - name: Set image to Latest
-      run: kubectl set image deployments/dreamflow-cms dreamflow-cms-app=kaynet/dreamflow-cms:${{ steps.vars.outputs.sha_short }}
+      run: kubectl set image -n dreamflow deployments/dreamflow-cms dreamflow-cms-app=kaynet/dreamflow-cms:${{ steps.vars.outputs.sha_short }}
