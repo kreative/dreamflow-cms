@@ -68,7 +68,6 @@
 
   async function handleSave(isDraft) {
     var markdown = content.value();
-    console.log(markdown);
     
     try {
       var resp = await axios.post("/api/posts", {
@@ -88,8 +87,8 @@
     finally {
       if (resp.data.status === 500) alert("Internal Server Error");
       else {
-        console.log(resp.data.data.post.id);
-        window.location = `/admin/content-type/post/${resp.data.data.post.id}`;
+        var id = resp.data.data.post.id;
+        window.location = "/admin/content-type/post/"+id;
       }
     }
   }

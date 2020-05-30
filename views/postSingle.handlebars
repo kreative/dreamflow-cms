@@ -14,11 +14,14 @@
       <button id="delete-btn" type="button" class="btn btn-danger btn-md">
         <i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Delete Post
       </button>
+      <button style="margin-left: 10px;" id="goback-btn" type="button" class="btn btn-secondary btn-md" onclick="window.location='/admin/content-type/post'">
+        <i class="fas fa-hand-point-left" style="margin-right: 5px;"></i> Go Back
+      </button>
     </div>
   </div>
   <div>
     <span class="badge badge-primary">{{id}}</span>
-    <span class="badge badge-info">{{draft}}</span>
+    <span class="badge badge-info" id="draft-badge">{{draft}}</span>
     <span class="badge badge-secondary">{{createdat}}</span>
   </div>
   <form>
@@ -53,8 +56,8 @@
 
     <textarea id="markdown-editor"></textarea>
 
-    <button type="submit" class="btn btn-primary" id="publish-btn">Publish post</button>
-    <button type="submit" class="btn btn-secondary" id="draft-btn">Save as draft</button>
+    <button type="submit" class="btn btn-primary" id="publish-btn" disabled>Publish post</button>
+    <button type="submit" class="btn btn-secondary" id="draft-btn" disabled>Save as draft</button>
   </form>
 </div>
 
@@ -71,10 +74,35 @@
   var draftBtn = document.getElementById("draft-btn");
   var deleteBtn = document.getElementById("delete-btn");
   var markdownEditor = document.getElementById("markdown-editor");
+  var draftBadge = document.getElementById("draft-badge");
 
   var content = new SimpleMDE({
     element: markdownEditor
   });
+
+  function handleKeyup() {
+    var newTitle = title.value;
+    var newSubtitle = subtitle.value;
+    var newCoverImage = coverImage.value;
+    var newPublishingDate = publishingDate.value;
+    var newAuthor = author.value;
+    var newContent = content.value();
+
+    if (newTitle != "{{title}}" ||
+        newSubtitle != "{{subtitle}}" ||
+        newCoverImage != "{{cover_image}}" ||
+        newPublishingDate != "{{publishing_date}}" ||
+        newAuthor != "{{author}}" ||
+        newContent != "{{content}}"
+    ) {
+      publishBtn.disabled = false;
+      draftBtn.disabled = false;
+    }
+    else {
+      publishBtn.disabled = true;
+      draftBtn.disabled = true;
+    }
+  }
 
   async function handleSave(isDraft) {
     var markdown = content.value();
@@ -98,6 +126,23 @@
       alert("Some sort of error occured.");
     }
   }
+
+  window.onload = function() {
+    title.value = "{{title}}";
+    subtitle.value = "{{subtitle}}";
+    coverImage.value = "{{cover_image}}";
+    publishingDate.value = "{{publishing_date}}";
+    author.value = "{{author}}";
+    draftBadge.textContent = "draft="+"{{draft}}";
+    content.value("{{content}}");
+  };
+
+  title.addEventListener('keyup', handleKeyup);
+  subtitle.addEventListener('keyup', handleKeyup);
+  coverImage.addEventListener('keyup', handleKeyup);
+  publishingDate.addEventListener('keyup', handleKeyup);
+  author.addEventListener('keyup', handleKeyup);
+  markdownEditor.addEventListener('keyup', handleKeyup);
 
   publishBtn.addEventListener('click', async function() {
     handleSave(false);
