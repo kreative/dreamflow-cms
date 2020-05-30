@@ -1,0 +1,108 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm">
+      <h1>Create new Post</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button id="goback-btn" type="button" class="btn btn-secondary btn-md">
+        <i class="fas fa-hand-point-left" style="margin-right: 5px;"></i> Go Back
+      </button>
+    </div>
+  </div>
+  <form>
+    <div class="form-group">
+      <label for="title-field">Title</label>
+      <input type="text" class="form-control" id="title-field" required>
+    </div>
+    <div class="form-group">
+      <label for="subtitle-field">Subtitle</label>
+      <input type="text" class="form-control" id="subtitle-field" required>
+    </div>
+    <div class="row">
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="coverimage-field">Cover Image</label>
+          <input type="text" class="form-control" id="coverimage-field" required>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="publishingdate-field">Publishing Date</label>
+          <input type="text" class="form-control" id="publishingdate-field" required>
+        </div>
+      </div>
+      <div class="col-sm">
+        <div class="form-group">
+          <label for="author-field">Author</label>
+          <input type="text" class="form-control" id="author-field" required>
+        </div>
+      </div>
+    </div>
+
+    <textarea id="markdown-editor"></textarea>
+
+    <button type="submit" class="btn btn-primary" id="publish-btn">Publish post</button>
+    <button type="submit" class="btn btn-secondary" id="draft-btn">Save as draft</button>
+  </form>
+</div>
+
+<script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+
+<script>
+
+  var title = document.getElementById("title-field");
+  var subtitle = document.getElementById("subtitle-field");
+  var coverImage = document.getElementById("coverimage-field");
+  var publishingDate = document.getElementById("publishingdate-field");
+  var author = document.getElementById("author-field");
+  var publishBtn = document.getElementById("publish-btn");
+  var draftBtn = document.getElementById("draft-btn");
+  var gobackBtn = document.getElementById("goback-btn");
+  var markdownEditor = document.getElementById("markdown-editor");
+
+  var content = new SimpleMDE({
+    element: markdownEditor
+  });
+
+  async function handleSave(isDraft) {
+    var markdown = content.value();
+    
+    try {
+      var resp = await axios.post("/api/posts", {
+        title: title.value,
+        subtitle: subtitle.value,
+        cover_image: coverImage.value,
+        publishing_date: publishingDate.value,
+        author: author.value,
+        content: markdown,
+        draft: isDraft
+      });
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error occured.");
+    }
+    finally {
+      if (resp.data.status === 500) alert("Internal Server Error");
+      else {
+        var id = resp.data.data.post.id;
+        window.location = "/admin/content-type/post/"+id;
+      }
+    }
+  }
+
+  publishBtn.addEventListener('click', async function() {
+    await handleSave(false);
+  });
+
+  draftBtn.addEventListener('click', async function() {
+    await handleSave(true);
+  });
+
+  gobackBtn.addEventListener('click', function() {
+    window.location = '/admin/content-type/post';
+  });
+
+</script>

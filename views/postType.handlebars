@@ -1,0 +1,45 @@
+<div class="container">
+  {{#if deleteSuccess}}
+    <div class="alert alert-success" role="alert">
+      Post deleted successfully. Whooh!
+    </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Content-Type: Post</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-primary btn-md" onclick="window.location='/admin/new-post'">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i> New Post
+      </button>
+    </div>
+  </div>
+  {{#if listExists}}
+    <table class="table table-bordered" style="margin-top: 25px;">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Publish Date</th>
+          <th scope="col">Draft</th>
+          <th scope="col">Tags</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each posts}}
+          <tr onclick="window.location='/admin/content-type/post/{{this.id}}'">
+            <th scope="row">{{this.title}}</th>
+            <td>{{this.publishing_date}}</td>
+            <td>{{this.draft}}</td>
+            <td>
+              {{#each this.tags}}
+                <span class="badge badge-primary">{{this}}</span>
+              {{/each}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>No posts found, be the first to make one.</p>
+  {{/if}}
+</div>

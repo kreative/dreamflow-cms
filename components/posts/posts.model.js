@@ -14,6 +14,10 @@ const Post = DB.define('post', {
         type: Sequelize.TEXT,
         allowNull: true
     },
+    draft: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false
+    },
     cover_image: {
         type: Sequelize.TEXT,
         allowNull: true
@@ -33,10 +37,6 @@ const Post = DB.define('post', {
     author: {
         type: Sequelize.TEXT,
         allowNull: false,
-        references: {
-            model: "author",
-            key: "id"
-        }
     },
     createdat: Sequelize.BIGINT
 }, {

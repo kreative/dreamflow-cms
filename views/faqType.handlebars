@@ -1,0 +1,98 @@
+<div class="container">
+  {{#if deleteSuccess}}
+    <div class="alert alert-success" role="alert">
+      FAQ deleted successfully. Whooh!
+    </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Content-Type: FAQ</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#newFaqModal">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i> New FAQ
+      </button>
+      <div class="modal fade" id="newFaqModal" tabindex="-1" role="dialog" aria-labelledby="newFaqModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="newFAQModalHeader">Create new FAQ</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class="needs-validation">
+                <div class="form-group">
+                  <label for="question-field">Question</label>
+                  <input type="text" class="form-control" id="question-field" required>
+                  <div class="invalid-feedback">Please provide a question</div>
+                </div>
+                <div class="form-group">
+                  <label for="answer-field">Answer</label>
+                  <textarea class="form-control" id="answer-field" rows="3" required></textarea>
+                  <div class="invalid-feedback">Please provide an answer</div>
+                </div>
+                <div class="form-group">
+                  <label for="product-field">Product</label>
+                  <input type="text" class="form-control" id="product-field" required>
+                  <div class="invalid-feedback">Please provide a product</div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="create-btn">Create FAQ</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{#if listExists}}
+    <table class="table table-bordered table-sm" style="margin-top: 25px;">
+      <thead>
+        <tr>
+          <th scope="col">Question</th>
+          <th scope="col">Answer</th>
+          <th scope="col">Product</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each faqs}}
+          <tr onclick="window.location='/admin/content-type/faq/{{this.id}}'">
+            <th scope="row">{{this.question}}</th>
+            <td>{{this.answer}}</td>
+            <td>{{this.product}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>No FAQs found, be the first to make one.</p>
+  {{/if}}
+</div>
+<script>
+  var createBtn = document.getElementById("create-btn");
+  var questionField = document.getElementById("question-field");
+  var answerField = document.getElementById("answer-field");
+  var productField = document.getElementById("product-field");
+
+  createBtn.addEventListener('click', async function() {
+    var question = questionField.value;
+    var product = productField.value;
+    var answer = answerField.value;
+
+    try {
+      var res = await axios.post('/api/faqs', {
+        question,
+        product,
+        answer
+      });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = `/admin/content-type/faq/${res.data.data.faq.id}`;
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+</script>

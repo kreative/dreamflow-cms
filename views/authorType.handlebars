@@ -1,0 +1,84 @@
+<div class="container">
+  {{#if deleteSuccess}}
+    <div class="alert alert-success" role="alert">
+      Author deleted successfully. Whooh!
+    </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-sm">
+      <h1>Content-Type: Author</h1>
+    </div>
+    <div class="col-sm d-flex align-items-center justify-content-end">
+      <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#addAuthorModal">
+        <i class="fas fa-plus" style="margin-right: 5px;"></i> Add Author
+      </button>
+      <div class="modal fade" id="addAuthorModal" tabindex="-1" role="dialog" aria-labelledby="addAuthorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="addAuthorModalLabel">Add new Author</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form class="needs-validation">
+                <div class="form-group">
+                  <label for="ksn-field">KSN</label>
+                  <input type="text" class="form-control" id="ksn-field" required>
+                  <div class="invalid-feedback">Please provide a valid KSN</div>
+                </div>
+                <div class="form-group">
+                  <label for="bio-field">Bio</label>
+                  <textarea class="form-control" id="bio-field" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="create-btn">Add Author</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {{#if listExists}}
+    <table class="table table-bordered table-sm" style="margin-top: 25px;">
+      <thead>
+        <tr>
+          <th scope="col">KSN</th>
+          <th scope="col">Biography</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each authors}}
+          <tr onclick="window.location='/admin/content-type/author/{{this.id}}'">
+            <th scope="row">{{this.ksn}}</th>
+            <td>{{this.author_bio}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>No Authors found, be the first to add one.</p>
+  {{/if}}
+</div>
+<script>
+  var createBtn = document.getElementById("create-btn");
+  var ksnField = document.getElementById("ksn-field");
+  var bioField = document.getElementById("bio-field");
+
+  createBtn.addEventListener('click', async function() {
+    try {
+      var res = await axios.post('/api/authors', {
+        ksn: ksnField.value,
+        author_bio: bioField.value,
+      });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = `/admin/content-type/author/${res.data.data.author.id}`;
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error");
+    }
+  });
+</script>
