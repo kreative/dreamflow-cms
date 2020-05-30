@@ -21,10 +21,10 @@ exports.createPost = (req, res) => {
   const cover_image = req.body.cover_image;
   const content = req.body.content;
   const publishing_date = req.body.publishing_date;
-  const tags = req.body.tags;
-  const author = req.body.author_ksn;
+  const author = req.body.author;
   const draft = req.body.draft;
   const createdat = Date.now();
+  //const tags = req.body.tags || ["post"];
 
   Post.create({
     id,
@@ -33,7 +33,6 @@ exports.createPost = (req, res) => {
     cover_image,
     content,
     publishing_date,
-    tags,
     author,
     draft,
     createdat,

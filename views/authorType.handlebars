@@ -67,13 +67,10 @@
   var bioField = document.getElementById("bio-field");
 
   createBtn.addEventListener('click', async function() {
-    var ksn = ksnField.value;
-    var author_bio = bioField.value;
-
     try {
       var res = await axios.post('/api/authors', {
-        ksn,
-        author_bio,
+        ksn: ksnField.value,
+        author_bio: bioField.value,
       });
 
       if (res.data.status === 500) alert("Internal Server Error");

@@ -37,10 +37,6 @@ const Post = DB.define('post', {
     author: {
         type: Sequelize.TEXT,
         allowNull: false,
-        references: {
-            model: "author",
-            key: "id"
-        }
     },
     createdat: Sequelize.BIGINT
 }, {

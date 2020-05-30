@@ -1,15 +1,25 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
 
 <div class="container">
+  {{#if updateSuccess}}
+  <div class="alert alert-success" role="alert">
+    Post updated successfully. Whooh!
+  </div>
+  {{/if}}
   <div class="row">
     <div class="col-sm">
-      <h1>Create new Post</h1>
+      <h1>Manage Post</h1>
     </div>
     <div class="col-sm d-flex align-items-center justify-content-end">
-      <button id="goback-btn" type="button" class="btn btn-secondary btn-md">
-        <i class="fas fa-hand-point-left" style="margin-right: 5px;"></i> Go Back
+      <button id="delete-btn" type="button" class="btn btn-danger btn-md">
+        <i class="fas fa-trash-alt" style="margin-right: 5px;"></i> Delete Post
       </button>
     </div>
+  </div>
+  <div>
+    <span class="badge badge-primary">{{id}}</span>
+    <span class="badge badge-info">{{draft}}</span>
+    <span class="badge badge-secondary">{{createdat}}</span>
   </div>
   <form>
     <div class="form-group">
@@ -59,7 +69,7 @@
   var author = document.getElementById("author-field");
   var publishBtn = document.getElementById("publish-btn");
   var draftBtn = document.getElementById("draft-btn");
-  var gobackBtn = document.getElementById("goback-btn");
+  var deleteBtn = document.getElementById("delete-btn");
   var markdownEditor = document.getElementById("markdown-editor");
 
   var content = new SimpleMDE({
@@ -68,10 +78,9 @@
 
   async function handleSave(isDraft) {
     var markdown = content.value();
-    console.log(markdown);
-    
+
     try {
-      var resp = await axios.post("/api/posts", {
+      var res = await axios.post("/api/posts/{{id}}", {
         title: title.value,
         subtitle: subtitle.value,
         cover_image: coverImage.value,
@@ -80,30 +89,35 @@
         content: markdown,
         draft: isDraft
       });
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else location.replace('/admin/content-type/post/{{id}}?updated=true');
     }
     catch (error) {
       console.log(error);
       alert("Some sort of error occured.");
     }
-    finally {
-      if (resp.data.status === 500) alert("Internal Server Error");
-      else {
-        console.log(resp.data.data.post.id);
-        window.location = `/admin/content-type/post/${resp.data.data.post.id}`;
-      }
-    }
   }
 
   publishBtn.addEventListener('click', async function() {
-    await handleSave(false);
+    handleSave(false);
   });
 
   draftBtn.addEventListener('click', async function() {
-    await handleSave(true);
+    handleSave(true);
   });
 
-  gobackBtn.addEventListener('click', function() {
-    window.location = '/admin/content-type/post';
+  deleteBtn.addEventListener('click', async function() {
+    try {
+      var res = await axios.delete("/api/posts/{{id}}");
+
+      if (res.data.status === 500) alert("Internal Server Error");
+      else window.location = '/admin/content-type/post?deleted=true';
+    }
+    catch (error) {
+      console.log(error);
+      alert("Some sort of error occured");
+    }
   });
 
 </script>
