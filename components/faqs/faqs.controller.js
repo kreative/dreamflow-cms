@@ -9,8 +9,16 @@ exports.getFAQs = (req, res) => {
       res.json({ status: 500, data: { errorCode: "internal_server_error" } });
     })
     .then((faqs) => {
+      let product_list = [];
+      for (let i = 0; i < faqs.length; i++) {
+        const product = faqs[i].product;
+        if (!product_list.includes(product)) {
+          product_list.push(product);
+        }
+      }
+
       IRIS.info("get faqs passed", {}, ["success"]);
-      res.json({ status: 200, data: { faqs } });
+      res.json({ status: 200, data: { faqs, product_list } });
     });
 };
 

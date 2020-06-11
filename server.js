@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const helmet = require("helmet");
 const exphbs = require('express-handlebars');
 const path = require("path");
+const cors = require("cors");
 
 dotenv.config();
 Sentry.init({dsn:process.env.SENTRY_DSN});
@@ -20,6 +21,7 @@ const posts = require("./components/posts/routes");
 const admin = require("./components/admin/routes");
 
 server.use(helmet());
+server.use(cors());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: true}));
 server.use(express.static(path.join(__dirname, '/public')));
