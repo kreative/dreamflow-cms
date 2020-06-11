@@ -80,30 +80,6 @@
     element: markdownEditor
   });
 
-  function handleKeyup() {
-    var newTitle = title.value;
-    var newSubtitle = subtitle.value;
-    var newCoverImage = coverImage.value;
-    var newPublishingDate = publishingDate.value;
-    var newAuthor = author.value;
-    var newContent = content.value();
-
-    if (newTitle != "{{title}}" ||
-        newSubtitle != "{{subtitle}}" ||
-        newCoverImage != "{{cover_image}}" ||
-        newPublishingDate != "{{publishing_date}}" ||
-        newAuthor != "{{author}}" ||
-        newContent != "{{content}}"
-    ) {
-      publishBtn.disabled = false;
-      draftBtn.disabled = false;
-    }
-    else {
-      publishBtn.disabled = true;
-      draftBtn.disabled = true;
-    }
-  }
-
   async function handleSave(isDraft) {
     var markdown = content.value();
 
@@ -136,13 +112,6 @@
     draftBadge.textContent = "draft="+"{{draft}}";
     content.value("{{content}}");
   };
-
-  title.addEventListener('keyup', handleKeyup);
-  subtitle.addEventListener('keyup', handleKeyup);
-  coverImage.addEventListener('keyup', handleKeyup);
-  publishingDate.addEventListener('keyup', handleKeyup);
-  author.addEventListener('keyup', handleKeyup);
-  markdownEditor.addEventListener('keyup', handleKeyup);
 
   publishBtn.addEventListener('click', async function() {
     handleSave(false);

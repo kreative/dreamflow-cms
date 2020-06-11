@@ -32,7 +32,8 @@ server.set('view engine', 'handlebars');
 
 server.get("/", (req, res) => {
   res.send(`
-    Dreamflow CMS is online, Dreamer! <br>
+    Welcome Dreamer! <br>
+    The Dreamflow CMS is online. <br>
     DBHOST: ${process.env.PGHOST} <br>
     DBDATABASE: ${process.env.PGDATABASE}
   `);
