@@ -3,14 +3,29 @@ const Post = require("./posts.model");
 const IRIS = require("../../config/iris");
 
 exports.getPosts = (req, res) => {
-  Post.findAll({where:{draft:false}})
+  Post.findAll({ where: { draft: false } })
     .catch((err) => {
       IRIS.critical("get posts failed", { req, err }, ["ise", "api"]);
       res.json({ status: 500, data: { errorCode: "internal_server_error" } });
     })
     .then((posts) => {
-      IRIS.info("get posts passed", {}, ["success"]);
-      res.json({ status: 200, data: { posts } });
+      if (req.query.version === "short") {
+        let shortenedPosts = [];
+        for (let i = 0; i < posts.length; i++) {
+          shortenedPosts.push({
+            publishing_date: posts[i].publishing_date,
+            cover_image: posts[i].cover_image,
+            title: posts[i].title,
+            author: posts[i].author,
+            subtitle: posts[i].subtitle,
+          });
+        }
+        IRIS.info("get posts, shortened version", {}, ["success"]);
+        res.json({ status: 200, data: { posts: shortenedPosts } });
+      } else {
+        IRIS.info("get posts passed", {}, ["success"]);
+        res.json({ status: 200, data: { posts } });
+      }
     });
 };
 
@@ -58,7 +73,7 @@ exports.editPost = (req, res) => {
       publishing_date: req.body.publishing_date,
       tags: req.body.tags,
       author: req.body.author,
-      draft: req.body.draft
+      draft: req.body.draft,
     },
     { where: { id: req.params.id } }
   )
@@ -126,7 +141,7 @@ exports.getPostSinglePage = (req, res) => {
           author: post.author,
           tags: post.tags,
           draft: post.draft,
-          createdat: datetime
+          createdat: datetime,
         });
       }
     });
